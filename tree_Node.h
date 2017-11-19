@@ -8,6 +8,7 @@
 
 #include "rapidjson/document.h"
 
+
 namespace tree
 {
 	class Node
