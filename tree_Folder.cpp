@@ -104,6 +104,7 @@ std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 		std::unique_ptr<Folder> folder(new Folder(""));
 		
 	}
+
 	else
 	{
 		if (!json.HasMember("name") || !json.HasMember("content"))
