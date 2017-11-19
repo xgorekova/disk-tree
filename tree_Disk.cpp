@@ -5,6 +5,7 @@
 #include <memory>
 #include <stack>
 
+
 #ifdef _DEBUG
 #define new DBG_NEW
 #endif
