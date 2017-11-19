@@ -3,6 +3,7 @@
 #include <memory>
 #include <numeric>
 
+
 #ifdef _DEBUG
 #define new DBG_NEW
 #endif
