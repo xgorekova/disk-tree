@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tree_Size.h"
-
+#include <memory>
 #include <string>
 #include <ostream>
 

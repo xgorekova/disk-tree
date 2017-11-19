@@ -1,5 +1,5 @@
 #pragma once
-
+#include<memory>
 #include "tree_Node.h"
 
 namespace tree

@@ -1,6 +1,6 @@
 #include "headers.h"
 #include "tree_Folder.h"
-
+#include <memory>
 #include <numeric>
 
 #ifdef _DEBUG
@@ -91,14 +91,18 @@ void Folder::Remove(const Node * node)
 	_content.erase(std::remove(_content.begin(), _content.end(), node), _content.end());
 }
 
-Folder * Folder::Parse(rapidjson::Value & json)
+std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 {
-	Folder * folder = nullptr;
+	//Folder * folder = nullptr;
+	std::unique_ptr<Folder> folder = nullptr;
 	rapidjson::Value * content = nullptr;
 	if (json.IsArray())
 	{	// root
 		content = &json;
-		folder = new Folder("");
+		//folder = new Folder("");
+		folder.reset();
+		std::unique_ptr<Folder> folder(new Folder(""));
+		
 	}
 	else
 	{
@@ -106,7 +110,9 @@ Folder * Folder::Parse(rapidjson::Value & json)
 			return nullptr;
 
 		content = &(json["content"]);
-		folder = new Folder(json["name"].GetString());
+		//folder = new Folder(json["name"].GetString());
+		folder.reset();
+		std::unique_ptr<Folder> folder(new Folder(json["name"].GetString()));
 	}
 
 	for (auto & elm : content->GetArray())

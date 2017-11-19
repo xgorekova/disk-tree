@@ -1,6 +1,6 @@
 #include "headers.h"
 #include "tree_File.h"
-
+#include <memory>
 #include <ostream>
 
 #ifdef _DEBUG
@@ -14,7 +14,7 @@ void tree::File::List(bool /*bFollow*/, bool /*bRecursive*/, const std::string &
 	out << Name() << " [" << _size.toString() << "]" << std::endl;
 }
 
-File * tree::File::Parse(rapidjson::Value & json)
+std::unique_ptr<File> tree::File::Parse(rapidjson::Value & json)
 {
 	if (!json.HasMember("name"))
 		return nullptr;
@@ -23,5 +23,6 @@ File * tree::File::Parse(rapidjson::Value & json)
 	if (size < tree::Size())
 		return nullptr;
 	
-	return new File(json["name"].GetString(), size);
+	std::unique_ptr<File> file(new File(json["name"].GetString(), size));
+	return file;
 }

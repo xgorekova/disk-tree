@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tree_Node.h"
-
+#include <memory>
 #include <vector>
 #include <regex>
 

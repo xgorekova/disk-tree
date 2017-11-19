@@ -1,6 +1,6 @@
 #pragma once
 #include "tree_Node.h"
-
+#include <memory>
 namespace tree
 {
 	class Link : public Node
