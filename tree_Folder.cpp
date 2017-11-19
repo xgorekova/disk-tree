@@ -10,6 +10,7 @@
 
 using namespace tree;
 
+
 tree::Size Folder::Size(bool bFollow, bool bRecursive) const
 {
 	return std::accumulate(
