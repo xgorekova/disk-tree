@@ -26,12 +26,12 @@ void Link::List(bool bFollow, bool bRecursive, const std::string & offset, std::
 	}
 }
 
-Link * Link::Parse(rapidjson::Value & json)
-//std::unique_ptr<Link> Link::Parse(rapidjson::Value & json)
+//Link * Link::Parse(rapidjson::Value & json)
+std::unique_ptr<Link> Link::Parse(rapidjson::Value & json)
 {
 	if (!json.HasMember("name") || !json.HasMember("link"))
 		return nullptr;
 
-	//std::unique_ptr<Link> link(new Link(json["name"].GetString(), json["link"].GetString()));
-	return new Link(json["name"].GetString(), json["link"].GetString());
+	return std::unique_ptr<Link> {new Link(json["name"].GetString(), json["link"].GetString())};
+	//return new Link(json["name"].GetString(), json["link"].GetString());
 }
