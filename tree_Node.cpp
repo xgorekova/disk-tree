@@ -3,7 +3,7 @@
 #include "tree_File.h"
 #include "tree_Folder.h"
 #include "tree_Link.h"
-#include <memory>
+
 #ifdef _DEBUG
 #define new DBG_NEW
 #endif

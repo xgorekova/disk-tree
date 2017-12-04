@@ -1,8 +1,7 @@
 #include "headers.h"
 #include "tree_Folder.h"
-#include <memory>
-#include <numeric>
 
+#include <numeric>
 
 #ifdef _DEBUG
 #define new DBG_NEW
@@ -10,33 +9,32 @@
 
 using namespace tree;
 
-
 tree::Size Folder::Size(bool bFollow, bool bRecursive) const
 {
 	return std::accumulate(
 		_content.begin(),
 		_content.end(),
 		.0,
-		[bFollow, bRecursive](tree::Size size, const Node * node)
-		{
-			auto * folder = dynamic_cast<const Folder*>(node);
+		[bFollow, bRecursive](tree::Size size, auto & node)
+	{
+		auto * folder = dynamic_cast<const Folder*>(node.get());
 
-			if (folder)
-			{
-				return size + (bRecursive ? folder->Size(bFollow, bRecursive) : 0.);
-			}
-			else
-			{
-				return size + node->Size(bFollow, bRecursive);
-			}
+		if (folder)
+		{
+			return size + (bRecursive ? folder->Size(bFollow, bRecursive) : 0.);
 		}
+		else
+		{
+			return size + node->Size(bFollow, bRecursive);
+		}
+	}
 	);
 }
 
 void Folder::List(bool bFollow, bool bRecursive, const std::string & offset, std::ostream & out) const
 {
 	out << "[" << Name() << "]" << std::endl;
-	for (auto node : _content)
+	for (auto & node : _content)
 	{
 		auto * folder = dynamic_cast<const Folder*>(node.get());
 		if (!bRecursive && folder)
@@ -51,17 +49,14 @@ void Folder::List(bool bFollow, bool bRecursive, const std::string & offset, std
 	}
 }
 
-void Folder::Insert(std::unique_ptr<Node> && ptr)
+void Folder::Insert(std::unique_ptr<Node> && node)
 {
-	//_content.push_back(std::move(ptr));
-	_content.push_back(ptr);
-
-
+	_content.push_back(std::move(node));
 }
 
-std::unique_ptr<Node> Folder::Find(const std::string & path) const
+Node * Folder::Find(const std::string & path) const
 {
-	std::regex rgx { "/" };
+	std::regex rgx{ "/" };
 	auto start = path.begin();
 	if (*start == '/')
 		++start;
@@ -69,12 +64,12 @@ std::unique_ptr<Node> Folder::Find(const std::string & path) const
 	return Find({ start, path.end(), rgx, -1 });
 }
 
-std::unique_ptr<Node> Folder::Find(std::sregex_token_iterator iter) const
+Node * Folder::Find(std::sregex_token_iterator iter) const
 {
 	if (iter == std::sregex_token_iterator())
 		return nullptr;
 
-	auto itNode = std::find_if(_content.begin(), _content.end(), [&iter](std::unique_ptr<Node> node)
+	auto itNode = std::find_if(_content.begin(), _content.end(), [&iter](auto & node)
 	{
 		return node->Name() == *iter;
 	}
@@ -84,33 +79,27 @@ std::unique_ptr<Node> Folder::Find(std::sregex_token_iterator iter) const
 		return nullptr;
 
 	if (++iter == std::sregex_token_iterator())
-		return ((*itNode).get());
-	//return *itNode;
+		return itNode->get();
 
-	auto * folder = dynamic_cast<Folder*>((*itNode).get());
+	auto * folder = dynamic_cast<Folder*>(itNode->get());
 
 	return folder ? folder->Find(iter) : nullptr;
 }
 
-void Folder::Remove(const std::unique_ptr<Node> node)
+void Folder::Remove(const Node * node)
 {
-	_content.erase(std::remove(_content.begin(), _content.end(), node), _content.end());
+	_content.erase(std::remove_if(_content.begin(), _content.end(), [node](auto & ptr) { return ptr.get() == node; }), _content.end());
 }
 
 std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 {
 	Folder * folder = nullptr;
-	
 	rapidjson::Value * content = nullptr;
 	if (json.IsArray())
 	{	// root
 		content = &json;
 		folder = new Folder("");
-		//folder.reset();
-		//std::unique_ptr<Folder> folder(new Folder(""));
-		
 	}
-
 	else
 	{
 		if (!json.HasMember("name") || !json.HasMember("content"))
@@ -118,8 +107,6 @@ std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 
 		content = &(json["content"]);
 		folder = new Folder(json["name"].GetString());
-		//folder.reset();
-		//std::unique_ptr<Folder> folder(new Folder(json["name"].GetString()));
 	}
 
 	for (auto & elm : content->GetArray())
@@ -131,5 +118,5 @@ std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 		folder->Insert(std::move(pNode));
 	}
 
-	return std::unique_ptr<Folder> {new Folder(* folder)};
+	return std::unique_ptr<Folder> { folder };
 }

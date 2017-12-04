@@ -1,12 +1,12 @@
 #pragma once
 
 #include "tree_Size.h"
-#include <memory>
+
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "rapidjson/document.h"
-
 
 namespace tree
 {

@@ -4,6 +4,7 @@
 
 #include "../tree_Folder.h"
 #include "../tree_Disk.h"
+#include "../tree_File.h"
 
 #include <memory>
 #include <sstream>
@@ -16,7 +17,7 @@ TEST(Folder, Initialization)
 		rapidjson::Document json;
 		EXPECT_TRUE((rapidjson::ParseResult)json.Parse(R"({"name": "folder"})"));
 
-		std::unique_ptr<tree::Folder> ptr { tree::Folder::Parse(json) };
+		std::unique_ptr<tree::Folder> ptr{ tree::Folder::Parse(json) };
 		EXPECT_EQ(ptr.get(), nullptr);
 	}
 
@@ -24,7 +25,7 @@ TEST(Folder, Initialization)
 		rapidjson::Document json;
 		EXPECT_TRUE((rapidjson::ParseResult)json.Parse(R"({"content": []})"));
 
-		std::unique_ptr<tree::Folder> ptr { tree::Folder::Parse(json) };
+		std::unique_ptr<tree::Folder> ptr{ tree::Folder::Parse(json) };
 		EXPECT_EQ(ptr.get(), nullptr);
 	}
 
@@ -32,7 +33,7 @@ TEST(Folder, Initialization)
 		rapidjson::Document json;
 		EXPECT_TRUE((rapidjson::ParseResult)json.Parse(R"({"name": "folder", "content": []})"));
 
-		std::unique_ptr<tree::Folder> ptr { tree::Folder::Parse(json) };
+		std::unique_ptr<tree::Folder> ptr{ tree::Folder::Parse(json) };
 		EXPECT_NE(ptr.get(), nullptr);
 	}
 
@@ -40,7 +41,7 @@ TEST(Folder, Initialization)
 		rapidjson::Document json;
 		EXPECT_TRUE((rapidjson::ParseResult)json.Parse(R"([])"));
 
-		std::unique_ptr<tree::Folder> ptr { tree::Folder::Parse(json) };
+		std::unique_ptr<tree::Folder> ptr{ tree::Folder::Parse(json) };
 		EXPECT_NE(ptr.get(), nullptr);
 	}
 }
@@ -50,7 +51,7 @@ TEST(Folder, Size)
 	rapidjson::Document json;
 	EXPECT_TRUE((rapidjson::ParseResult)json.Parse(data::json_str));
 
-	std::unique_ptr<tree::Folder> ptr { tree::ParseDisk(json) };
+	std::unique_ptr<tree::Folder> ptr{ tree::ParseDisk(json) };
 	EXPECT_NE(ptr.get(), nullptr);
 
 	EXPECT_DOUBLE_EQ((double)ptr->Size(false, false), 4);
@@ -67,7 +68,7 @@ TEST(Folder, List)
 	rapidjson::Document json;
 	EXPECT_TRUE((rapidjson::ParseResult)json.Parse(data::json_str));
 
-	std::unique_ptr<tree::Folder> ptr { tree::ParseDisk(json) };
+	std::unique_ptr<tree::Folder> ptr{ tree::ParseDisk(json) };
 	EXPECT_NE(ptr.get(), nullptr);
 
 	{
@@ -170,7 +171,7 @@ TEST(Folder, Operations)
 	rapidjson::Document json;
 	EXPECT_TRUE((rapidjson::ParseResult)json.Parse(data::json_str));
 
-	std::unique_ptr<tree::Folder> ptr { tree::ParseDisk(json) };
+	std::unique_ptr<tree::Folder> ptr{ tree::ParseDisk(json) };
 	EXPECT_NE(ptr.get(), nullptr);
 
 	EXPECT_EQ(ptr->Content().size(), 5);
@@ -181,9 +182,11 @@ TEST(Folder, Operations)
 	auto node = ptr->Find("/file-X");
 	EXPECT_NE(node, nullptr);
 
-	ptr->Remove(std::move(node));
+	ptr->Remove(node);
 	EXPECT_EQ(ptr->Find("/file-X"), nullptr);
 
-	ptr->Insert(std::move(node));
+
+	EXPECT_TRUE((rapidjson::ParseResult)json.Parse(R"({ "name": "file-X", "size": "4B" })"));
+	ptr->Insert(tree::File::Parse(json));
 	EXPECT_NE(ptr->Find("/file-X"), nullptr);
 }
