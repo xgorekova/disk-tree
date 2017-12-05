@@ -13,14 +13,14 @@ using namespace tree;
 
 Handler cmd::GetHandler(const std::string & line)
 {
-	auto args = ParseOptions(line);
+	auto args = ParseOptions(line); //view call hierarchy 
 	if (!args)
 		return nullptr;
 
 	switch (args.value().first)
 	{
-		case Command::Help:
-			return Help;
+	case Command::Help:
+		return Help(args.value().second);
 		case Command::Quit:
 			return Quit;
 		case Command::Size:
