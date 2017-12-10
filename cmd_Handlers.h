@@ -11,7 +11,7 @@ namespace tree
 
 namespace cmd
 {
-	Handler Help(const Options & options);
+	bool Help(tree::Node *, std::ostream  & out);
 	bool Quit(tree::Node *, std::ostream & out);
 
 	Handler Size(const Options & options);
