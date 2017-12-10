@@ -1,6 +1,6 @@
 #include "headers.h"
 #include "tree_File.h"
-#include <memory>
+
 #include <ostream>
 
 #ifdef _DEBUG
@@ -19,10 +19,9 @@ std::unique_ptr<File> tree::File::Parse(rapidjson::Value & json)
 	if (!json.HasMember("name"))
 		return nullptr;
 
-	tree::Size size { json["size"].GetString() };
+	tree::Size size{ json["size"].GetString() };
 	if (size < tree::Size())
 		return nullptr;
-	
-	std::unique_ptr<File> file(new File(json["name"].GetString(), size));
-	return file;
+
+	return std::unique_ptr<File> { new File(json["name"].GetString(), size) };
 }

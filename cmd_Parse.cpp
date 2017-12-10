@@ -13,7 +13,7 @@ using namespace tree;
 
 std::optional<std::pair<Command, Options>> cmd::ParseOptions(const std::string & line)
 {
-	std::regex rgx { "^(help|list|size|quit)(\\s-(recursive|follow)(\\s-(recursive|follow)){0,1}){0,1}(\\s+/(.+)){0,1}$" };
+	std::regex rgx{ "^(help|list|size|quit)(\\s-(recursive|follow)(\\s-(recursive|follow)){0,1}){0,1}(\\s+/(.+)){0,1}$" };
 	std::smatch match;
 	if (!std::regex_match(line, match, rgx))
 		return {};
@@ -36,7 +36,7 @@ std::optional<std::pair<Command, Options>> cmd::ParseOptions(const std::string &
 	else
 		return {};
 
-	return std::make_pair(command, Options { bFollow, bRecursive, path });
+	return std::make_pair(command, Options{ bFollow, bRecursive, path });
 }
 
 std::variant<std::string, tree::Node *> cmd::ParsePath(const std::string & path, tree::Node * root)
@@ -50,7 +50,7 @@ std::variant<std::string, tree::Node *> cmd::ParsePath(const std::string & path,
 			return "invalid root";
 		}
 
-		root = folder->Find(path).get();
+		root = folder->Find(path);
 		if (!root)
 		{
 			//todo: make nice error message
