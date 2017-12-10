@@ -11,9 +11,11 @@
 using namespace cmd;
 using namespace tree;
 
+
 std::optional<std::pair<Command, Options>> cmd::ParseOptions(const std::string & line)
 {
-	std::regex rgx{ "^(help|list|size|quit)(\\s-(recursive|follow)(\\s-(recursive|follow)){0,1}){0,1}(\\s+/(.+)){0,1}$" };
+	std::regex rgx{ "^(help|list|size|quit|rm|mkdir|touch|link)(\\s-(recursive|follow)(\\s-(recursive|follow)){0,1}){0,1}(\\s+(.+)){0,1}$" };
+	//na vytvorenie adresara, linku bude tiez cesta tak budu zacinat lomitkom ako size + zmena v testoch 
 	std::smatch match;
 	if (!std::regex_match(line, match, rgx))
 		return {};
@@ -21,18 +23,53 @@ std::optional<std::pair<Command, Options>> cmd::ParseOptions(const std::string &
 	bool bFollow = match[3] == "follow" || match[5] == "follow";
 	bool bRecursive = match[3] == "recursive" || match[5] == "recursive";
 
-	std::string path = match[7].matched ? match[7].str() : "/";
+	std::string path;
 
 	Command command;
 
-	if (match[1] == "help")
+	if (match[1] == "help") {
+
 		command = Command::Help;
-	else if (match[1] == "list")
+		if (match[7].matched) {
+			if (match[7].str()[0] == '/' || match[7].str()[0] == '-')
+				return {};
+			path = match[7].str();
+		}
+	}
+	else if (match[1] == "list") {
+
 		command = Command::List;
-	else if (match[1] == "size")
+		if (match[7].matched) {
+
+			if (match[7].str()[0] != '/')
+				return {};
+			path = match[7].str();
+		}
+
+		else {
+			path = '/';
+		}
+	}
+	else if (match[1] == "size") {
 		command = Command::Size;
-	else if (match[1] == "quit")
+		if (match[7].matched) {
+
+			if (match[7].str()[0] != '/')
+				return {};
+			path = match[7].str();
+		}
+		else {
+			path = '/';
+		}
+	}
+
+	else if (match[1] == "quit") {
+
 		command = Command::Quit;
+		if (match[7].matched)
+			return {};
+	}
+
 	else
 		return {};
 
