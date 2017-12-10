@@ -70,6 +70,37 @@ std::optional<std::pair<Command, Options>> cmd::ParseOptions(const std::string &
 			return {};
 	}
 
+	else if (match[1] == "rm")
+	{
+		command = Command::Remove;
+		if (match[7].matched)
+		{
+			if (match[7].str()[0] == '/' || match[7].str()[0] == '-')
+				return {};
+			path = match[7].str();
+		}
+
+	}
+	else if (match[1] == "mkdir")
+	{
+		command = Command::MkDir;
+		if (match[7].matched)
+		{
+			if (match[7].str()[0] == '/' || match[7].str()[0] == '-')
+				return {};
+			path = match[7].str();
+		}
+	}
+	else if (match[1] == "link")
+	{
+		command = Command::Link;
+
+	}
+	else if (match[1] == "touch")
+	{
+		command = Command::Touch;
+
+	}
 	else
 		return {};
 

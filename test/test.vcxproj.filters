@@ -87,6 +87,18 @@
     <ClCompile Include="test_Size_object.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\cmd_MkDir.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cmd_Remove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cmd_Touch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cmd_Link.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data.h">

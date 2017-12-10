@@ -37,7 +37,7 @@ TEST(Size, Initialization_String_MB)
 
 TEST(Size, Initialization_String_GB)
 {
-	EXPECT_DOUBLE_EQ(Size("78GB"), 78. * 1024 *1024 * 1024);
+	EXPECT_DOUBLE_EQ(Size("78GB"), 78. * 1024 * 1024 * 1024);
 
 	EXPECT_DOUBLE_EQ(Size("4.36GB"), 4.36 * 1024 * 1024 * 1024);
 
