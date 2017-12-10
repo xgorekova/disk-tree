@@ -120,3 +120,5 @@ std::unique_ptr<Folder> Folder::Parse(rapidjson::Value & json)
 
 	return std::unique_ptr<Folder> { folder };
 }
+
+

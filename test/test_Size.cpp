@@ -19,7 +19,7 @@ TEST(Size, Command)
 		auto command = cmd::GetHandler("size -recursive -faddsdfs");
 		EXPECT_EQ(command, nullptr);
 	}
- 
+
 	{
 		auto command = cmd::GetHandler("size -recursive -follow -faddsdfs");
 		EXPECT_EQ(command, nullptr);
@@ -33,7 +33,7 @@ TEST(Size, Command)
 	rapidjson::Document json;
 	EXPECT_TRUE((rapidjson::ParseResult)json.Parse(data::json_str));
 
-	std::unique_ptr<tree::Folder> ptr { tree::ParseDisk(json) };
+	std::unique_ptr<tree::Folder> ptr{ tree::ParseDisk(json) };
 	EXPECT_NE(ptr.get(), nullptr);
 
 	{
